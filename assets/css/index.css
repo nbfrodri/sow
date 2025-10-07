@@ -263,7 +263,6 @@ h2:hover {
 }
 
 .header {
-  /* kept for backward compatibility if header sometimes uses class="header" */
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -272,7 +271,6 @@ h2:hover {
   box-sizing: border-box;
 }
 
-/* Ensure the semantic <header> fills the viewport (if not using .header class) */
 header {
   min-height: 100vh;
   display: flex;
@@ -505,21 +503,29 @@ h3 {
 
 /* Container for the image grid */
 .image-grid {
-  display: grid; /* Enables grid layout */
-  grid-template-columns: repeat(2, 1fr); /* 2 columns */
-  grid-template-rows: repeat(2, auto); /* 2 rows */
-  gap: 40px; /* Space between images */
-  max-width: 900px; /* Optional: limit grid width */
-  margin: 0 auto; /* Center the grid */
+  display: grid;
+
+  /* Mantener 2x2 cuando hay espacio, y pasar a 1 columna en móvil */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+
+  /* Separación: column-gap y row-gap por separado para controlar espacio horizontal y vertical */
+  column-gap: clamp(16px, 3.5vw, 48px);
+  row-gap: clamp(12px, 6vw, 36px);
+
+  /* ancho máximo de la grid */
+  width: min(900px, 95%);
+  margin: 0 auto;
   margin-bottom: 3rem;
 }
 
 /* Each image cell keeps a fixed aspect ratio */
 .image-cell {
   box-shadow: 2px -2px 7px 2px #b78ef8, -2px 2px 7px 2px #ffd3f5;
-  aspect-ratio: 16 / 9; /* Square ratio (1:1) */
-  overflow: hidden; /* Hide overflow outside the box */
-  border-radius: 8px; /* Optional rounded corners */
+  aspect-ratio: 16 / 9; /* keep a consistent 16:9 frame */
+  overflow: hidden;
+  border-radius: 8px;
+  width: 100%;
+  display: block;
 }
 
 .image-cell:hover {
@@ -527,12 +533,12 @@ h3 {
   cursor: pointer;
 }
 
-/* Style for each image */
 .image-grid img {
-  width: 100%; /* Make image fill the grid cell */
-  height: 100%; /* Keep aspect ratio */
-  border-radius: 8px; /* Optional: rounded corners */
-  object-fit: cover; /* Crop nicely if sizes differ */
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
 }
 
 /* Table from: https://divtable.com/table-styler/ */
@@ -553,13 +559,30 @@ div.criteriosTabla {
 }
 .divTableCell {
   border: 1.5px solid #130e15;
-  max-width: 4rem;
-  min-width: 1rem;
+  /* allow flexible width so text can wrap naturally */
+  max-width: none;
+  min-width: 0;
 
   /* center text horizontally and vertically */
   text-align: center;
   vertical-align: middle;
-  padding: 0.75rem 1rem; /* ensure enough space inside the cell */
+  padding: 0.75rem 1rem;
+
+  /* Prevent text overflow and enable responsive wrapping */
+  white-space: normal; /* allow wrapping inside the cell */
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.divTable.criteriosTabla {
+  width: 85%;
+  max-width: 1100px;
+  margin: 2rem auto 0 auto;
+  box-sizing: border-box;
+  table-layout: fixed;
+  overflow: hidden;
 }
 
 .divTableCell:hover {
@@ -574,11 +597,20 @@ div.criteriosTabla {
   /* center text horizontally and vertically */
   text-align: center;
   vertical-align: middle;
-  padding: 0.75rem 1rem; /* ensure enough space inside the cell */
+  padding: 0.75rem 1rem;
 }
 .divTable.criteriosTabla .divTableBody .divTableCell {
-  font-size: 2vh;
+  /* Responsive font-size: scales with viewport but clamped to reasonable bounds */
+  font-size: clamp(0.8rem, 1.4vw, 1.15rem);
   color: #ffd3f5;
+}
+
+/* Small-screen adjustments to keep cells readable and compact */
+@media (max-width: 480px) {
+  .divTable.criteriosTabla .divTableBody .divTableCell {
+    font-size: clamp(0.72rem, 2.2vw, 0.95rem);
+    padding: 0.5rem 0.5rem;
+  }
 }
 #last-left-cell {
   border-bottom-left-radius: 10px;
@@ -712,7 +744,7 @@ footer.site-footer {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 360px; /* Brand + contact */
+  grid-template-columns: 1fr 360px;
   gap: 1.5rem 2.5rem;
   align-items: center;
 }
