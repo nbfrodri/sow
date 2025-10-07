@@ -541,6 +541,32 @@ h3 {
   display: block;
 }
 
+/* Image modal (lightbox) */
+.image-modal {
+  position: fixed;
+  inset: 0;
+  display: none; /* hidden by default */
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 3000;
+  padding: 2rem;
+}
+
+.image-modal[aria-hidden="false"] {
+  display: flex;
+}
+
+.image-modal__img {
+  max-width: min(95vw, 1200px);
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  object-fit: contain;
+}
+
 /* Table from: https://divtable.com/table-styler/ */
 
 div.criteriosTabla {
